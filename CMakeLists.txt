@@ -9,13 +9,15 @@ add_subdirectory(dependencies/webgpu)
 add_subdirectory(dependencies/glfw3webgpu)
 
 set(SOURCES main.cpp)
-set(HEADERS lib/adapter.h)
 
 add_executable(App 
   ${SOURCES}
-  ${HEADERS}
+  lib/adapter.cpp
+  lib/adapter.h
 )
 target_link_libraries(App PRIVATE glfw webgpu glfw3webgpu)
+target_include_directories(App PUBLIC lib)
+
 set_target_properties(App PROPERTIES
     CXX_STANDARD 17
     CXX_EXTENSIONS OFF
