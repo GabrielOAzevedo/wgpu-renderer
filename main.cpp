@@ -1,4 +1,5 @@
 #include "lib/adapter.h"
+#include "lib/command_encoder.h"
 #include "lib/command_queue.h"
 #include "lib/device.h"
 #include <GLFW/glfw3.h>
@@ -71,11 +72,69 @@ int main(int, char **) {
   WGPUQueue queue = createCommandQueue(device);
   std::cout << "Queue created: " << queue << std::endl;
 
+  WGPUSwapChainDescriptor swapChainDescriptor = {};
+  swapChainDescriptor.nextInChain = nullptr;
+  swapChainDescriptor.label = "Swap Chain";
+  swapChainDescriptor.width = 640;
+  swapChainDescriptor.height = 480;
+  WGPUTextureFormat format = WGPUTextureFormat_BGRA8Unorm;
+  swapChainDescriptor.format = format;
+  swapChainDescriptor.usage = WGPUTextureUsage_RenderAttachment;
+  swapChainDescriptor.presentMode = WGPUPresentMode_Fifo;
+  WGPUSwapChain swapChain =
+      wgpuDeviceCreateSwapChain(device, surface, &swapChainDescriptor);
+  std::cout << "Swap chain created: " << swapChain << std::endl;
+
   while (!glfwWindowShouldClose(window)) {
     glfwPollEvents();
+    WGPUTextureView nextTexture = wgpuSwapChainGetCurrentTextureView(swapChain);
+    std::cout << "Next texture: " << nextTexture << std::endl;
+    if (!nextTexture) {
+      std::cerr << "Failed to get next texture" << std::endl;
+      break;
+    }
+
+    WGPUCommandEncoder commandEncoder = createCommandEncoder(device);
+    std::cout << "Command encoder created: " << commandEncoder << std::endl;
+
+    WGPURenderPassColorAttachment renderPassColorAttachment = {};
+    renderPassColorAttachment.view = nextTexture;
+    renderPassColorAttachment.resolveTarget = nullptr;
+    renderPassColorAttachment.loadOp = WGPULoadOp_Clear;
+    renderPassColorAttachment.storeOp = WGPUStoreOp_Store;
+    renderPassColorAttachment.clearValue = {0.9f, 0.1f, 0.2f, 1.0f};
+
+    WGPURenderPassDescriptor renderPassDescriptor = {};
+    renderPassDescriptor.colorAttachmentCount = 1;
+    renderPassDescriptor.colorAttachments = &renderPassColorAttachment;
+    renderPassDescriptor.depthStencilAttachment = nullptr;
+    renderPassDescriptor.timestampWriteCount = 0;
+    renderPassDescriptor.timestampWrites = nullptr;
+    renderPassDescriptor.nextInChain = nullptr;
+
+    WGPURenderPassEncoder renderPass = wgpuCommandEncoderBeginRenderPass(
+        commandEncoder, &renderPassDescriptor);
+    wgpuRenderPassEncoderEnd(renderPass);
+    wgpuRenderPassEncoderRelease(renderPass);
+
+    wgpuTextureViewRelease(nextTexture);
+
+    WGPUCommandBufferDescriptor commandBufferDescriptor = {};
+    commandBufferDescriptor.nextInChain = nullptr;
+    commandBufferDescriptor.label = "Command Buffer";
+    WGPUCommandBuffer commandBuffer =
+        wgpuCommandEncoderFinish(commandEncoder, &commandBufferDescriptor);
+
+    wgpuCommandEncoderRelease(commandEncoder);
+    wgpuQueueSubmit(queue, 1, &commandBuffer);
+    wgpuCommandBufferRelease(commandBuffer);
+
+    /* Release and present the texture */
+    wgpuSwapChainPresent(swapChain);
   }
 
-  // Releases wgpu objects
+  /* Releases wgpu objects */
+  wgpuSwapChainRelease(swapChain);
   wgpuDeviceRelease(device);
   wgpuSurfaceRelease(surface);
   wgpuAdapterRelease(adapter);
