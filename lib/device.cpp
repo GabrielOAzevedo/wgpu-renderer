@@ -39,3 +39,23 @@ WGPUDevice requestDevice(WGPUAdapter adapter,
 
   return userData.device;
 }
+
+WGPUDeviceDescriptor createDeviceDescriptor() {
+  WGPUDeviceDescriptor deviceDescriptor = {};
+  deviceDescriptor.nextInChain = nullptr;
+  deviceDescriptor.label = "Device";
+  deviceDescriptor.requiredFeaturesCount = 0;
+  deviceDescriptor.requiredLimits = nullptr;
+  deviceDescriptor.defaultQueue.nextInChain = nullptr;
+  deviceDescriptor.defaultQueue.label = "Default Queue";
+
+  return deviceDescriptor;
+}
+
+WGPUDevice buildDefaultDevice(WGPUAdapter adapter) {
+  std::cout << "Requesting device" << std::endl;
+  WGPUDeviceDescriptor deviceDescriptor = createDeviceDescriptor();
+  WGPUDevice device = requestDevice(adapter, &deviceDescriptor);
+  std::cout << "Device created: " << device << std::endl;
+  return device;
+}

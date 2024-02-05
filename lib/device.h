@@ -4,5 +4,7 @@
 
 WGPUDevice requestDevice(WGPUAdapter adapter,
                          WGPUDeviceDescriptor const *descriptor);
+WGPUDeviceDescriptor createDeviceDescriptor();
+WGPUDevice buildDefaultDevice(WGPUAdapter adapter);
 
 #endif // DEVICE_H
