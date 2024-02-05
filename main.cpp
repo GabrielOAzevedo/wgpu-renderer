@@ -2,6 +2,7 @@
 #include "lib/command_encoder.h"
 #include "lib/command_queue.h"
 #include "lib/device.h"
+#include "lib/swapchain.h"
 #include <GLFW/glfw3.h>
 #include <glfw3webgpu.h>
 #include <iostream>
@@ -48,17 +49,7 @@ int main(int, char **) {
   WGPUQueue queue = createCommandQueue(device);
   std::cout << "Queue created: " << queue << std::endl;
 
-  WGPUSwapChainDescriptor swapChainDescriptor = {};
-  swapChainDescriptor.nextInChain = nullptr;
-  swapChainDescriptor.label = "Swap Chain";
-  swapChainDescriptor.width = 640;
-  swapChainDescriptor.height = 480;
-  WGPUTextureFormat format = WGPUTextureFormat_BGRA8Unorm;
-  swapChainDescriptor.format = format;
-  swapChainDescriptor.usage = WGPUTextureUsage_RenderAttachment;
-  swapChainDescriptor.presentMode = WGPUPresentMode_Fifo;
-  WGPUSwapChain swapChain =
-      wgpuDeviceCreateSwapChain(device, surface, &swapChainDescriptor);
+  WGPUSwapChain swapChain = buildDefaultSwapChain(device, surface, 640, 480);
   std::cout << "Swap chain created: " << swapChain << std::endl;
 
   while (!glfwWindowShouldClose(window)) {

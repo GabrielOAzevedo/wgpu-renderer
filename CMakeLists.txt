@@ -16,10 +16,12 @@ add_executable(App
   lib/device.cpp
   lib/command_queue.cpp
   lib/command_encoder.cpp
+  lib/swapchain.cpp
   lib/adapter.h
   lib/device.h
   lib/command_queue.h
   lib/command_encoder.h
+  lib/swapchain.h
 )
 target_link_libraries(App PRIVATE glfw webgpu glfw3webgpu)
 target_include_directories(App PUBLIC lib)
