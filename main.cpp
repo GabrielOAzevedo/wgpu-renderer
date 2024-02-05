@@ -2,6 +2,7 @@
 #include "lib/command_encoder.h"
 #include "lib/command_queue.h"
 #include "lib/device.h"
+#include "lib/renderpass.h"
 #include "lib/swapchain.h"
 #include <GLFW/glfw3.h>
 #include <glfw3webgpu.h>
@@ -63,23 +64,13 @@ int main(int, char **) {
 
     WGPUCommandEncoder commandEncoder = createCommandEncoder(device);
 
-    WGPURenderPassColorAttachment renderPassColorAttachment = {};
-    renderPassColorAttachment.view = nextTexture;
-    renderPassColorAttachment.resolveTarget = nullptr;
-    renderPassColorAttachment.loadOp = WGPULoadOp_Clear;
-    renderPassColorAttachment.storeOp = WGPUStoreOp_Store;
-    renderPassColorAttachment.clearValue = {0.9f, 0.1f, 0.2f, 1.0f};
+    WGPURenderPassColorAttachment renderPassColorAttachment =
+        buildColorAttachment(nextTexture);
+    WGPURenderPassDescriptor renderPassDescriptor =
+        buildRenderPassDescriptor(renderPassColorAttachment);
 
-    WGPURenderPassDescriptor renderPassDescriptor = {};
-    renderPassDescriptor.colorAttachmentCount = 1;
-    renderPassDescriptor.colorAttachments = &renderPassColorAttachment;
-    renderPassDescriptor.depthStencilAttachment = nullptr;
-    renderPassDescriptor.timestampWriteCount = 0;
-    renderPassDescriptor.timestampWrites = nullptr;
-    renderPassDescriptor.nextInChain = nullptr;
-
-    WGPURenderPassEncoder renderPass = wgpuCommandEncoderBeginRenderPass(
-        commandEncoder, &renderPassDescriptor);
+    WGPURenderPassEncoder renderPass =
+        beginRenderPass(commandEncoder, &renderPassDescriptor);
     wgpuRenderPassEncoderEnd(renderPass);
     wgpuRenderPassEncoderRelease(renderPass);
 
