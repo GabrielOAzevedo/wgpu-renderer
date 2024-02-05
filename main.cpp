@@ -71,16 +71,14 @@ int main(int, char **) {
 
     WGPURenderPassEncoder renderPass =
         beginRenderPass(commandEncoder, &renderPassDescriptor);
-    wgpuRenderPassEncoderEnd(renderPass);
-    wgpuRenderPassEncoderRelease(renderPass);
+    submitRenderPass(renderPass);
 
     wgpuTextureViewRelease(nextTexture);
 
-    WGPUCommandBufferDescriptor commandBufferDescriptor = {};
-    commandBufferDescriptor.nextInChain = nullptr;
-    commandBufferDescriptor.label = "Command Buffer";
+    WGPUCommandBufferDescriptor commandBufferDescriptor =
+        makeCommandBufferDescriptor();
     WGPUCommandBuffer commandBuffer =
-        wgpuCommandEncoderFinish(commandEncoder, &commandBufferDescriptor);
+        finishCommandEncoder(commandEncoder, commandBufferDescriptor);
 
     wgpuCommandEncoderRelease(commandEncoder);
     wgpuQueueSubmit(queue, 1, &commandBuffer);
