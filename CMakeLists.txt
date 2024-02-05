@@ -13,7 +13,9 @@ set(SOURCES main.cpp)
 add_executable(App 
   ${SOURCES}
   lib/adapter.cpp
+  lib/device.cpp
   lib/adapter.h
+  lib/device.h
 )
 target_link_libraries(App PRIVATE glfw webgpu glfw3webgpu)
 target_include_directories(App PUBLIC lib)

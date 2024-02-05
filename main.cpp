@@ -1,4 +1,5 @@
 #include "lib/adapter.h"
+#include "lib/device.h"
 #include <GLFW/glfw3.h>
 #include <glfw3webgpu.h>
 #include <iostream>
@@ -55,14 +56,26 @@ int main(int, char **) {
     std::cout << "  " << feature << std::endl;
   }
 
+  std::cout << "Requesting device" << std::endl;
+  WGPUDeviceDescriptor deviceDescriptor = {};
+  deviceDescriptor.nextInChain = nullptr;
+  deviceDescriptor.label = "Device";
+  deviceDescriptor.requiredFeaturesCount = 0;
+  deviceDescriptor.requiredLimits = nullptr;
+  deviceDescriptor.defaultQueue.nextInChain = nullptr;
+  deviceDescriptor.defaultQueue.label = "Default Queue";
+  WGPUDevice device = requestDevice(adapter, &deviceDescriptor);
+  std::cout << "Device created" << device << std::endl;
+
   while (!glfwWindowShouldClose(window)) {
     glfwPollEvents();
   }
 
   // Releases wgpu objects
-  wgpuInstanceRelease(instance);
-  wgpuAdapterRelease(adapter);
+  wgpuDeviceRelease(device);
   wgpuSurfaceRelease(surface);
+  wgpuAdapterRelease(adapter);
+  wgpuInstanceRelease(instance);
 
   glfwDestroyWindow(window);
   glfwTerminate();
