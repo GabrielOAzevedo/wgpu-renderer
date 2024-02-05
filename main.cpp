@@ -1,4 +1,5 @@
 #include "lib/adapter.h"
+#include "lib/command_queue.h"
 #include "lib/device.h"
 #include <GLFW/glfw3.h>
 #include <glfw3webgpu.h>
@@ -65,7 +66,10 @@ int main(int, char **) {
   deviceDescriptor.defaultQueue.nextInChain = nullptr;
   deviceDescriptor.defaultQueue.label = "Default Queue";
   WGPUDevice device = requestDevice(adapter, &deviceDescriptor);
-  std::cout << "Device created" << device << std::endl;
+  std::cout << "Device created: " << device << std::endl;
+
+  WGPUQueue queue = createCommandQueue(device);
+  std::cout << "Queue created: " << queue << std::endl;
 
   while (!glfwWindowShouldClose(window)) {
     glfwPollEvents();
