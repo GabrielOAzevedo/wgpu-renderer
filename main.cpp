@@ -40,23 +40,8 @@ int main(int, char **) {
   std::cout << "WebGPU instance created" << instance << std::endl;
 
   WGPUSurface surface = glfwGetWGPUSurface(instance, window);
-
-  WGPURequestAdapterOptions adapterOpts = {};
-  adapterOpts.nextInChain = nullptr;
-  adapterOpts.compatibleSurface = surface;
-
-  WGPUAdapter adapter = requestAdapter(instance, &adapterOpts);
-
-  std::cout << "Adapter created" << adapter << std::endl;
-
-  std::vector<WGPUFeatureName> features;
-  size_t featureCount = wgpuAdapterEnumerateFeatures(adapter, nullptr);
-  features.resize(featureCount);
-  wgpuAdapterEnumerateFeatures(adapter, features.data());
-  std::cout << "Adapter features: " << std::endl;
-  for (auto feature : features) {
-    std::cout << "  " << feature << std::endl;
-  }
+  WGPUAdapter adapter = buildDefaultAdapter(instance);
+  std::vector<WGPUFeatureName> features = getAdapterFeatures(adapter);
 
   WGPUDevice device = buildDefaultDevice(adapter);
 
