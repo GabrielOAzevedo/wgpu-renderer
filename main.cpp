@@ -62,7 +62,6 @@ int main(int, char **) {
     }
 
     WGPUCommandEncoder commandEncoder = createCommandEncoder(device);
-    std::cout << "Command encoder created: " << commandEncoder << std::endl;
 
     WGPURenderPassColorAttachment renderPassColorAttachment = {};
     renderPassColorAttachment.view = nextTexture;
