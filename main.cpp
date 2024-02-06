@@ -4,6 +4,7 @@
 #include "lib/device.h"
 #include "lib/renderpass.h"
 #include "lib/swapchain.h"
+#include "lib/pipeline.h"
 #include <GLFW/glfw3.h>
 #include <glfw3webgpu.h>
 #include <iostream>
@@ -107,24 +108,9 @@ int main(int, char **) {
   fragmentState.targetCount = 1;
   fragmentState.targets = &colorTargetState;
 
-  WGPURenderPipelineDescriptor pipelineDesc = {};
-  pipelineDesc.nextInChain = nullptr;
-  pipelineDesc.vertex.bufferCount = 0;
-  pipelineDesc.vertex.buffers = nullptr;
-  pipelineDesc.vertex.module = shaderModule;
-  pipelineDesc.vertex.entryPoint = "vs_main";
-  pipelineDesc.vertex.constantCount = 0;
-  pipelineDesc.vertex.constants = nullptr;
-  pipelineDesc.primitive.topology = WGPUPrimitiveTopology_TriangleList;
-  pipelineDesc.primitive.stripIndexFormat = WGPUIndexFormat_Undefined;
-  pipelineDesc.primitive.frontFace = WGPUFrontFace_CCW;
-  pipelineDesc.primitive.cullMode = WGPUCullMode_None;
-  pipelineDesc.multisample.count = 1;
-  pipelineDesc.multisample.mask = ~0u;
-  pipelineDesc.multisample.alphaToCoverageEnabled = false;
-  pipelineDesc.fragment = &fragmentState;
-  pipelineDesc.depthStencil = nullptr;
-  pipelineDesc.layout = nullptr;
+  WGPURenderPipelineDescriptor pipelineDesc = buildRenderPipelineDescriptor(
+    shaderModule, fragmentState, "vs_main"
+  );
 
   WGPURenderPipeline pipeline =
       wgpuDeviceCreateRenderPipeline(device, &pipelineDesc);
@@ -144,23 +130,17 @@ int main(int, char **) {
         buildColorAttachment(nextTexture);
     WGPURenderPassDescriptor renderPassDescriptor =
         buildRenderPassDescriptor(renderPassColorAttachment);
-
     WGPURenderPassEncoder renderPass =
         beginRenderPass(commandEncoder, &renderPassDescriptor);
-
     wgpuRenderPassEncoderSetPipeline(renderPass, pipeline);
-
     wgpuRenderPassEncoderDraw(renderPass, 3, 1, 0, 0);
-
     submitRenderPass(renderPass);
-
     wgpuTextureViewRelease(nextTexture);
 
     WGPUCommandBufferDescriptor commandBufferDescriptor =
         makeCommandBufferDescriptor();
     WGPUCommandBuffer commandBuffer =
         finishCommandEncoder(commandEncoder, commandBufferDescriptor);
-
     wgpuCommandEncoderRelease(commandEncoder);
     wgpuQueueSubmit(queue, 1, &commandBuffer);
     wgpuCommandBufferRelease(commandBuffer);
