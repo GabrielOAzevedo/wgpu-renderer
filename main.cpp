@@ -5,11 +5,14 @@
 #include "lib/renderpass.h"
 #include "lib/swapchain.h"
 #include "lib/pipeline.h"
+#include "lib/shaders.h"
 #include <GLFW/glfw3.h>
 #include <glfw3webgpu.h>
 #include <iostream>
 #include <vector>
 #include <webgpu/webgpu.h>
+#include <fstream>
+#include <string>
 
 int main(int, char **) {
   glfwInit();
@@ -69,30 +72,13 @@ int main(int, char **) {
   colorTargetState.blend = &blendState;
   colorTargetState.writeMask = WGPUColorWriteMask_All;
 
-  const char *shaderSource = R"(
-    @vertex
-    fn vs_main(@builtin(vertex_index) in_vertex_index: u32) -> @builtin(position) vec4f {
-        var p = vec2f(0.0, 0.0);
-        if (in_vertex_index == 0u) {
-            p = vec2f(-0.5, -0.5);
-        } else if (in_vertex_index == 1u) {
-            p = vec2f(0.5, -0.5);
-        } else {
-            p = vec2f(0.0, 0.5);
-        }
-        return vec4f(p, 0.0, 1.0);
-    }
-
-    @fragment
-    fn fs_main() -> @location(0) vec4f {
-        return vec4f(0.0, 0.4, 1.0, 1.0);
-    }
-  )";
+  const std::string shaderSource = loadShaderFromFile("lib/shader/default.wsgl");
+  std::cout << "Shader source: " << shaderSource << std::endl;
 
   WGPUShaderModuleWGSLDescriptor wgslDesc = {};
   wgslDesc.chain.next = nullptr;
   wgslDesc.chain.sType = WGPUSType_ShaderModuleWGSLDescriptor;
-  wgslDesc.code = shaderSource;
+  wgslDesc.code = shaderSource.c_str();
 
   WGPUShaderModuleDescriptor shaderModuleDesc = {};
   shaderModuleDesc.nextInChain = &wgslDesc.chain;
@@ -118,7 +104,6 @@ int main(int, char **) {
   while (!glfwWindowShouldClose(window)) {
     glfwPollEvents();
     WGPUTextureView nextTexture = wgpuSwapChainGetCurrentTextureView(swapChain);
-    std::cout << "Next texture: " << nextTexture << std::endl;
     if (!nextTexture) {
       std::cerr << "Failed to get next texture" << std::endl;
       break;

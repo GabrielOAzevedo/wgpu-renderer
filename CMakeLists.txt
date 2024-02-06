@@ -19,6 +19,7 @@ add_executable(App
   lib/swapchain.cpp
   lib/renderpass.cpp
   lib/pipeline.cpp
+  lib/shaders.cpp
   lib/adapter.h
   lib/device.h
   lib/command_queue.h
@@ -26,6 +27,7 @@ add_executable(App
   lib/swapchain.h
   lib/renderpass.h
   lib/pipeline.h
+  lib/shaders.h
 )
 target_link_libraries(App PRIVATE glfw webgpu glfw3webgpu)
 target_include_directories(App PUBLIC lib)

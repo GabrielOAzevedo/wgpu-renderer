@@ -7,7 +7,6 @@ WGPUCommandEncoder createCommandEncoder(WGPUDevice device) {
   desc.label = "Command Encoder";
   WGPUCommandEncoder commandEncoder =
       wgpuDeviceCreateCommandEncoder(device, &desc);
-  std::cout << "Command encoder created: " << commandEncoder << std::endl;
   return commandEncoder;
 }
 
@@ -22,6 +21,5 @@ WGPUCommandBuffer finishCommandEncoder(WGPUCommandEncoder commandEncoder,
                                        WGPUCommandBufferDescriptor descriptor) {
   WGPUCommandBuffer commandBuffer =
       wgpuCommandEncoderFinish(commandEncoder, &descriptor);
-  std::cout << "Command buffer created: " << commandBuffer << std::endl;
   return commandBuffer;
 }
