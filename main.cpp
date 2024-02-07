@@ -6,6 +6,7 @@
 #include "lib/swapchain.h"
 #include "lib/pipeline.h"
 #include "lib/shaders.h"
+#include "lib/buffer.h"
 #include <GLFW/glfw3.h>
 #include <glfw3webgpu.h>
 #include <iostream>
@@ -99,6 +100,7 @@ int main(int, char **) {
       wgpuDeviceCreateRenderPipeline(device, &pipelineDesc);
 
   while (!glfwWindowShouldClose(window)) {
+    wgpuDeviceTick(device);
     glfwPollEvents();
     WGPUTextureView nextTexture = wgpuSwapChainGetCurrentTextureView(swapChain);
     if (!nextTexture) {

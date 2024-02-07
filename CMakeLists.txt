@@ -9,17 +9,7 @@ add_subdirectory(dependencies/webgpu)
 add_subdirectory(dependencies/glfw3webgpu)
 
 set(SOURCES main.cpp)
-
-add_executable(App 
-  ${SOURCES}
-  lib/adapter.cpp
-  lib/device.cpp
-  lib/command_queue.cpp
-  lib/command_encoder.cpp
-  lib/swapchain.cpp
-  lib/renderpass.cpp
-  lib/pipeline.cpp
-  lib/shaders.cpp
+set(HEADERS 
   lib/adapter.h
   lib/device.h
   lib/command_queue.h
@@ -28,6 +18,24 @@ add_executable(App
   lib/renderpass.h
   lib/pipeline.h
   lib/shaders.h
+  lib/buffer.h
+)
+set(LIB
+  lib/adapter.cpp
+  lib/device.cpp
+  lib/command_queue.cpp
+  lib/command_encoder.cpp
+  lib/swapchain.cpp
+  lib/renderpass.cpp
+  lib/pipeline.cpp
+  lib/shaders.cpp
+  lib/buffer.cpp
+)
+
+add_executable(App 
+  ${SOURCES}
+  ${HEADERS}
+  ${LIB}
 )
 target_link_libraries(App PRIVATE glfw webgpu glfw3webgpu)
 target_include_directories(App PUBLIC lib)
