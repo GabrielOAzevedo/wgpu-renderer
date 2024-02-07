@@ -59,13 +59,14 @@ int main(int, char **) {
       buildDefaultSwapChain(device, surface, textureFormat, 640, 480);
   std::cout << "Swap chain created: " << swapChain << std::endl;
 
-  WGPUBlendState blendState = {};
-  blendState.color.srcFactor = WGPUBlendFactor_SrcAlpha;
-  blendState.color.dstFactor = WGPUBlendFactor_OneMinusSrcAlpha;
-  blendState.color.operation = WGPUBlendOperation_Add;
-  blendState.alpha.srcFactor = WGPUBlendFactor_Zero;
-  blendState.alpha.dstFactor = WGPUBlendFactor_One;
-  blendState.alpha.operation = WGPUBlendOperation_Add;
+  WGPUBlendState blendState = buildBlendState(
+    WGPUBlendFactor_SrcAlpha,
+    WGPUBlendFactor_OneMinusSrcAlpha,
+    WGPUBlendOperation_Add,
+    WGPUBlendFactor_Zero,
+    WGPUBlendFactor_One,
+    WGPUBlendOperation_Add
+  );
 
   WGPUColorTargetState colorTargetState = {};
   colorTargetState.format = textureFormat;
