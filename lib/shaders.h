@@ -11,5 +11,10 @@ WGPUBlendState buildBlendState(
   WGPUBlendFactor alphaDstFactor,
   WGPUBlendOperation alphaBlendOp
 );
+WGPUColorTargetState buildColorTargetState(
+  WGPUTextureFormat textureFormat,
+  WGPUBlendState *blendState,
+  WGPUColorWriteMask writeMask
+);
 
 #endif

@@ -68,13 +68,13 @@ int main(int, char **) {
     WGPUBlendOperation_Add
   );
 
-  WGPUColorTargetState colorTargetState = {};
-  colorTargetState.format = textureFormat;
-  colorTargetState.blend = &blendState;
-  colorTargetState.writeMask = WGPUColorWriteMask_All;
+  WGPUColorTargetState colorTargetState = buildColorTargetState(
+    textureFormat, 
+    &blendState, 
+    WGPUColorWriteMask_All
+  );
 
   const std::string shaderSource = loadShaderFromFile("lib/shader/default.wsgl");
-  std::cout << "Shader source: " << shaderSource << std::endl;
 
   WGPUShaderModuleWGSLDescriptor wgslDesc = {};
   wgslDesc.chain.next = nullptr;

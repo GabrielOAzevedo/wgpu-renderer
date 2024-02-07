@@ -28,3 +28,16 @@ WGPUBlendState buildBlendState(
 
   return blendState;
 }
+
+WGPUColorTargetState buildColorTargetState(
+  WGPUTextureFormat textureFormat,
+  WGPUBlendState *blendState,
+  WGPUColorWriteMask writeMask
+) {
+  WGPUColorTargetState colorTargetState = {};
+  colorTargetState.format = textureFormat;
+  colorTargetState.blend = blendState;
+  colorTargetState.writeMask = writeMask;
+
+  return colorTargetState;
+}
