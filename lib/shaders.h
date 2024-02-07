@@ -16,5 +16,10 @@ WGPUColorTargetState buildColorTargetState(
   WGPUBlendState *blendState,
   WGPUColorWriteMask writeMask
 );
+WGPUFragmentState buildFragmentState(
+  WGPUShaderModule shaderModule,
+  const char* entryPoint,
+  WGPUColorTargetState *colorTargetState
+);
 
 #endif

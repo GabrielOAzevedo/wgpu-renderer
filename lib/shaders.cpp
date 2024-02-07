@@ -41,3 +41,19 @@ WGPUColorTargetState buildColorTargetState(
 
   return colorTargetState;
 }
+
+WGPUFragmentState buildFragmentState(
+  WGPUShaderModule shaderModule,
+  const char* entryPoint,
+  WGPUColorTargetState *colorTargetState
+) {
+  WGPUFragmentState fragmentState = {};
+  fragmentState.module = shaderModule;
+  fragmentState.entryPoint = entryPoint;
+  fragmentState.constantCount = 0;
+  fragmentState.constants = nullptr;
+  fragmentState.targetCount = 1;
+  fragmentState.targets = colorTargetState;
+
+  return fragmentState;
+}

@@ -87,13 +87,9 @@ int main(int, char **) {
   WGPUShaderModule shaderModule =
       wgpuDeviceCreateShaderModule(device, &shaderModuleDesc);
 
-  WGPUFragmentState fragmentState = {};
-  fragmentState.module = shaderModule;
-  fragmentState.entryPoint = "fs_main";
-  fragmentState.constantCount = 0;
-  fragmentState.constants = nullptr;
-  fragmentState.targetCount = 1;
-  fragmentState.targets = &colorTargetState;
+  WGPUFragmentState fragmentState = buildFragmentState(
+    shaderModule, "fs_main", &colorTargetState
+  );
 
   WGPURenderPipelineDescriptor pipelineDesc = buildRenderPipelineDescriptor(
     shaderModule, fragmentState, "vs_main"
