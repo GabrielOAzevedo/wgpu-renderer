@@ -61,3 +61,10 @@ std::vector<WGPUFeatureName> getAdapterFeatures(WGPUAdapter adapter) {
   }
   return features;
 }
+
+WGPUSupportedLimits getAdapterSupportedLimits(WGPUAdapter adapter) {
+  WGPUSupportedLimits supportedLimits = {};
+  wgpuAdapterGetLimits(adapter, &supportedLimits);
+
+  return supportedLimits;
+}

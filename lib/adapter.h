@@ -8,5 +8,6 @@ WGPUAdapter requestAdapter(WGPUInstance instance,
 WGPURequestAdapterOptions requestAdapterOptions(WGPUSurface surface);
 WGPUAdapter buildDefaultAdapter(WGPUInstance instance);
 std::vector<WGPUFeatureName> getAdapterFeatures(WGPUAdapter adapter);
+WGPUSupportedLimits getAdapterSupportedLimits(WGPUAdapter adapter);
 
 #endif // WEBGPU_ADAPTER_H_
