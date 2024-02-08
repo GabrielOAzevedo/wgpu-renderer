@@ -92,9 +92,36 @@ int main(int, char **) {
     shaderModule, "fs_main", &colorTargetState
   );
 
+  std::vector<float> vertexData = {
+    -0.5, -0.5,
+    +0.5, -0.5,
+    +0.0, +0.5,
+
+    -0.55f, -0.5,
+    -0.05f, +0.5,
+    -0.55f, +0.5
+  };
+  int vertexCount = static_cast<int>(vertexData.size() / 2);
+  WGPUBuffer vertexBuffer = createBuffer(device, "Vertex Buffer", vertexData.size() * sizeof(float), WGPUBufferUsage_CopyDst | WGPUBufferUsage_Vertex);
+  writeToBuffer(queue, vertexBuffer, vertexData.data(), vertexData.size() * sizeof(float));
+
+  WGPUVertexAttribute vertexAttribute;
+  vertexAttribute.shaderLocation = 0;
+  vertexAttribute.format = WGPUVertexFormat_Float32x2;
+  vertexAttribute.offset = 0;
+
+  WGPUVertexBufferLayout vertexBufferLayout = {};
+  vertexBufferLayout.attributeCount = 1;
+  vertexBufferLayout.attributes = &vertexAttribute;
+  vertexBufferLayout.arrayStride = 2 * sizeof(float);
+  vertexBufferLayout.stepMode = WGPUVertexStepMode_Vertex;
+
   WGPURenderPipelineDescriptor pipelineDesc = buildRenderPipelineDescriptor(
     shaderModule, fragmentState, "vs_main"
   );
+
+  pipelineDesc.vertex.bufferCount = 1;
+  pipelineDesc.vertex.buffers = &vertexBufferLayout;
 
   WGPURenderPipeline pipeline =
       wgpuDeviceCreateRenderPipeline(device, &pipelineDesc);
@@ -116,8 +143,10 @@ int main(int, char **) {
         buildRenderPassDescriptor(renderPassColorAttachment);
     WGPURenderPassEncoder renderPass =
         beginRenderPass(commandEncoder, &renderPassDescriptor);
+    
     wgpuRenderPassEncoderSetPipeline(renderPass, pipeline);
-    wgpuRenderPassEncoderDraw(renderPass, 3, 1, 0, 0);
+    wgpuRenderPassEncoderSetVertexBuffer(renderPass, 0, vertexBuffer, 0, vertexData.size() * sizeof(float));
+    wgpuRenderPassEncoderDraw(renderPass, vertexCount, 1, 0, 0);
     submitRenderPass(renderPass);
     wgpuTextureViewRelease(nextTexture);
 
