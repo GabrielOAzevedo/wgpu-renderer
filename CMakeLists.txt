@@ -19,6 +19,7 @@ set(HEADERS
   lib/pipeline.h
   lib/shaders.h
   lib/buffer.h
+  lib/vertex.h
 )
 set(LIB
   lib/adapter.cpp
@@ -30,6 +31,7 @@ set(LIB
   lib/pipeline.cpp
   lib/shaders.cpp
   lib/buffer.cpp
+  lib/vertex.cpp
 )
 
 add_executable(App 

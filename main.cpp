@@ -7,6 +7,7 @@
 #include "lib/pipeline.h"
 #include "lib/shaders.h"
 #include "lib/buffer.h"
+#include "lib/vertex.h"
 #include <GLFW/glfw3.h>
 #include <glfw3webgpu.h>
 #include <iostream>
@@ -105,16 +106,14 @@ int main(int, char **) {
   WGPUBuffer vertexBuffer = createBuffer(device, "Vertex Buffer", vertexData.size() * sizeof(float), WGPUBufferUsage_CopyDst | WGPUBufferUsage_Vertex);
   writeToBuffer(queue, vertexBuffer, vertexData.data(), vertexData.size() * sizeof(float));
 
-  WGPUVertexAttribute vertexAttribute;
-  vertexAttribute.shaderLocation = 0;
-  vertexAttribute.format = WGPUVertexFormat_Float32x2;
-  vertexAttribute.offset = 0;
+  WGPUVertexAttribute vertexAttribute = createVertexAttribute(
+    0, WGPUVertexFormat_Float32x2, 0
+  );
+  std::vector<WGPUVertexAttribute> attributes = {vertexAttribute};
 
-  WGPUVertexBufferLayout vertexBufferLayout = {};
-  vertexBufferLayout.attributeCount = 1;
-  vertexBufferLayout.attributes = &vertexAttribute;
-  vertexBufferLayout.arrayStride = 2 * sizeof(float);
-  vertexBufferLayout.stepMode = WGPUVertexStepMode_Vertex;
+  WGPUVertexBufferLayout vertexBufferLayout = createVertexBufferLayout(
+    1, &attributes, 2 * sizeof(float), WGPUVertexStepMode_Vertex
+  );
 
   WGPURenderPipelineDescriptor pipelineDesc = buildRenderPipelineDescriptor(
     shaderModule, fragmentState, "vs_main"
