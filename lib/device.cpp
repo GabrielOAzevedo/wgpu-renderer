@@ -8,12 +8,13 @@ WGPUDevice requestDevice(WGPUAdapter adapter,
     WGPUDevice device = nullptr;
     bool requestEnded = false;
   };
-
   UserData userData;
 
-  auto onDeviceRequestEnded = [](WGPURequestDeviceStatus status,
-                                 WGPUDevice device, char const *message,
-                                 void *pUserData) {
+  auto onDeviceRequestEnded = [](
+    WGPURequestDeviceStatus status,
+    WGPUDevice device, char const *message,
+    void *pUserData
+  ) {
     UserData &userData = *reinterpret_cast<UserData *>(pUserData);
     if (status == WGPURequestDeviceStatus_Success) {
       userData.device = device;
@@ -24,16 +25,26 @@ WGPUDevice requestDevice(WGPUAdapter adapter,
   };
 
   auto onDeviceError = [](WGPUErrorType type, char const *message,
-                          void * /*pUserData*/) {
+                          void * pUserData) {
     std::cout << "Error type:" << type << std::endl;
     if (message) {
       std::cout << "  " << message << std::endl;
     }
+    std::cout << pUserData << std::endl;
+  };
+  
+  auto onDeviceLost = [](WGPUDeviceLostReason reason, char const * message, void * pUserData) {
+    std::cout << "Device lost: " << reason << std::endl;
+    if (message) {
+      std::cout << "  " << message << std::endl;
+    }
+    std::cout << pUserData << std::endl;
   };
 
   wgpuAdapterRequestDevice(adapter, descriptor, onDeviceRequestEnded,
                            &userData);
-  wgpuDeviceSetUncapturedErrorCallback(userData.device, onDeviceError, nullptr);
+  wgpuDeviceSetUncapturedErrorCallback(userData.device, onDeviceError, &userData);
+  wgpuDeviceSetDeviceLostCallback(userData.device, onDeviceLost, &userData);
 
   assert(userData.requestEnded);
 
