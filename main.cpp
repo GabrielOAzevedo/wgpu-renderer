@@ -78,17 +78,6 @@ int main(int, char **) {
 
   WGPUShaderModule shaderModule = loadShaderModuleFromFile(device, "lib/shader/default.wsgl");
 
-  /*WGPUShaderModuleWGSLDescriptor wgslDesc = {};
-  wgslDesc.chain.next = nullptr;
-  wgslDesc.chain.sType = WGPUSType_ShaderModuleWGSLDescriptor;
-  wgslDesc.code = shaderSource.c_str();
-
-  WGPUShaderModuleDescriptor shaderModuleDesc = {};
-  shaderModuleDesc.nextInChain = &wgslDesc.chain;
-
-  WGPUShaderModule shaderModule =
-      wgpuDeviceCreateShaderModule(device, &shaderModuleDesc);*/
-
   WGPUFragmentState fragmentState = buildFragmentState(
     shaderModule, "fs_main", &colorTargetState
   );
