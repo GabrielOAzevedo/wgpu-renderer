@@ -25,12 +25,11 @@ WGPUDevice requestDevice(WGPUAdapter adapter,
   };
 
   auto onDeviceError = [](WGPUErrorType type, char const *message,
-                          void * pUserData) {
+                          void * /*pUserData*/) {
     std::cout << "Error type:" << type << std::endl;
     if (message) {
       std::cout << "  " << message << std::endl;
     }
-    std::cout << pUserData << std::endl;
   };
   
   auto onDeviceLost = [](WGPUDeviceLostReason reason, char const * message, void * pUserData) {

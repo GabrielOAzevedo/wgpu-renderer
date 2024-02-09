@@ -59,9 +59,8 @@ WGPUFragmentState buildFragmentState(
   return fragmentState;
 }
 
-auto onShaderCompilationInfo = [](WGPUCompilationInfoRequestStatus status, WGPUCompilationInfo const *info, void *userdata) {
+auto onShaderCompilationInfo = [](WGPUCompilationInfoRequestStatus status, WGPUCompilationInfo const *info, void * /*userdata*/) {
   std::cout << "Compilation info request status: " << status << std::endl;
-  std::cout << userdata << std::endl;
   for (uint32_t i = 0; i < info->messageCount; ++i) {
     WGPUCompilationMessage message = info->messages[i];
     std::cout << "Compilation info: " << message.message << std::endl;

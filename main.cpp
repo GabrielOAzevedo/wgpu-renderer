@@ -83,26 +83,31 @@ int main(int, char **) {
   );
 
   std::vector<float> vertexData = {
-    -0.5, -0.5,
-    +0.5, -0.5,
-    +0.0, +0.5,
+    -0.5f, -0.5f, 0.5f, 0.0f, 0.0f,
+    +0.5f, -0.5f, 0.0f, 0.5f, 0.0f,
+    +0.0f, +0.5f, 0.0f, 0.0f, 0.5f,
 
-    -0.55f, -0.5,
-    -0.05f, +0.5,
-    -0.55f, +0.5
+    -0.55f, -0.5f, 0.5f, 0.0f, 0.0f,
+    -0.05f, +0.5f, 0.0f, 0.5f, 0.0f,
+    -0.55f, +0.5f, 0.0f, 0.0f, 0.5f
   };
-  int vertexCount = static_cast<int>(vertexData.size() / 2);
+  int vertexCount = static_cast<int>(vertexData.size() / 5);
   WGPUBuffer vertexBuffer = createBuffer(device, "Vertex Buffer", vertexData.size() * sizeof(float), WGPUBufferUsage_CopyDst | WGPUBufferUsage_Vertex);
   writeToBuffer(queue, vertexBuffer, vertexData.data(), vertexData.size() * sizeof(float));
 
   WGPUVertexAttribute vertexAttribute = createVertexAttribute(
     0, WGPUVertexFormat_Float32x2, 0
   );
-  std::vector<WGPUVertexAttribute> attributes = {vertexAttribute};
+  WGPUVertexAttribute vertexColor = createVertexAttribute(
+    1, WGPUVertexFormat_Float32x3, 2 * sizeof(float)
+  );
+  std::vector<WGPUVertexAttribute> attributes = {vertexAttribute, vertexColor};
 
   WGPUVertexBufferLayout vertexBufferLayout = createVertexBufferLayout(
-    1, &attributes, 2 * sizeof(float), WGPUVertexStepMode_Vertex
+    2, &attributes, 5 * sizeof(float), WGPUVertexStepMode_Vertex
   );
+
+  std::cout << vertexBufferLayout.arrayStride << std::endl;
 
   WGPURenderPipelineDescriptor pipelineDesc = buildRenderPipelineDescriptor(
     shaderModule, fragmentState, "vs_main"
