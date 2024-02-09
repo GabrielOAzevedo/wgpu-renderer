@@ -25,7 +25,7 @@ int main(int, char **) {
   }
 
   glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
-  GLFWwindow *window = glfwCreateWindow(640, 480, "Hello World", NULL, NULL);
+  GLFWwindow *window = glfwCreateWindow(640, 480, "WebGPU", NULL, NULL);
 
   if (!window) {
     std::cerr << "Failed to create window" << std::endl;
