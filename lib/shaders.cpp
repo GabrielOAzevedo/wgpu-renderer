@@ -1,3 +1,4 @@
+#include <iostream>
 #include <fstream>
 #include <string>
 #include <webgpu/webgpu.h>
@@ -56,4 +57,42 @@ WGPUFragmentState buildFragmentState(
   fragmentState.targets = colorTargetState;
 
   return fragmentState;
+}
+
+auto onShaderCompilationInfo = [](WGPUCompilationInfoRequestStatus status, WGPUCompilationInfo const *info, void *userdata) {
+  std::cout << "Compilation info request status: " << status << std::endl;
+  std::cout << userdata << std::endl;
+  for (uint32_t i = 0; i < info->messageCount; ++i) {
+    WGPUCompilationMessage message = info->messages[i];
+    std::cout << "Compilation info: " << message.message << std::endl;
+    WGPUCompilationMessageType status = message.type;
+
+    if (status == WGPUCompilationMessageType_Error) {
+      std::cout << "Compilation failed: " << message.message << std::endl;
+    } else {
+      std::cout << "Compilation Info: " << message.message << std::endl;
+    }
+  }
+};
+
+WGPUShaderModule loadShaderModuleFromFile(
+  WGPUDevice device,
+  const char* path
+) {
+  const std::string shaderSource = loadShaderFromFile(path);
+
+  WGPUShaderModuleWGSLDescriptor wgslDesc = {};
+  wgslDesc.chain.next = nullptr;
+  wgslDesc.chain.sType = WGPUSType_ShaderModuleWGSLDescriptor;
+  wgslDesc.code = shaderSource.c_str();
+
+  WGPUShaderModuleDescriptor shaderModuleDesc = {};
+  shaderModuleDesc.nextInChain = &wgslDesc.chain;
+
+  WGPUShaderModule shaderModule =
+      wgpuDeviceCreateShaderModule(device, &shaderModuleDesc);
+
+  wgpuShaderModuleGetCompilationInfo(shaderModule, onShaderCompilationInfo, nullptr);
+
+  return shaderModule;
 }

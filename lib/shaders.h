@@ -21,5 +21,6 @@ WGPUFragmentState buildFragmentState(
   const char* entryPoint,
   WGPUColorTargetState *colorTargetState
 );
+WGPUShaderModule loadShaderModuleFromFile(WGPUDevice device, const char* path);
 
 #endif

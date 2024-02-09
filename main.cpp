@@ -76,9 +76,9 @@ int main(int, char **) {
     WGPUColorWriteMask_All
   );
 
-  const std::string shaderSource = loadShaderFromFile("lib/shader/default.wsgl");
+  WGPUShaderModule shaderModule = loadShaderModuleFromFile(device, "lib/shader/default.wsgl");
 
-  WGPUShaderModuleWGSLDescriptor wgslDesc = {};
+  /*WGPUShaderModuleWGSLDescriptor wgslDesc = {};
   wgslDesc.chain.next = nullptr;
   wgslDesc.chain.sType = WGPUSType_ShaderModuleWGSLDescriptor;
   wgslDesc.code = shaderSource.c_str();
@@ -87,7 +87,7 @@ int main(int, char **) {
   shaderModuleDesc.nextInChain = &wgslDesc.chain;
 
   WGPUShaderModule shaderModule =
-      wgpuDeviceCreateShaderModule(device, &shaderModuleDesc);
+      wgpuDeviceCreateShaderModule(device, &shaderModuleDesc);*/
 
   WGPUFragmentState fragmentState = buildFragmentState(
     shaderModule, "fs_main", &colorTargetState
